@@ -1,1 +1,402 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <locale.h>
+#include <time.h>
 
+// ===================== CORES ANSI =====================
+#define RESET   "\033[0m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define BLUE    "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN    "\033[36m"
+#define BOLD    "\033[1m"
+
+// ===================== FUNÇÃO DE CARREGAMENTO =====================
+void carregando(const char *mensagem) {
+    system("clear");
+    printf("\n\n   %s\n\n", mensagem);
+    printf("   [");
+    for (int i = 0; i < 30; i++) {
+        printf("█");
+        fflush(stdout);
+        usleep(30000);
+    }
+    printf("] 100%%\n\n");
+    sleep(1);
+}
+
+// ===================== JOGO: PERGUNTA E RESPOSTA (Ciano) =====================
+void jogar_quiz() {
+    int pontuacao = 0;
+    char resposta;
+    int escolha;
+
+    char perg1[] = "Em qual jogo foi colocado o primeiro easter egg?\n";
+    char perg2[] = "Quando foi o inicio e o porque da segunda guerra mundial?\n";
+    char perg3[] = "Quem foi o criador do carro?\n";
+    char perg4[] = "Qual foram os dois primeiros herois criados pela marvel?\n";
+    char perg5[] = "Por quanto o minecraft foi vendido para microsoft?\n";
+
+    system("clear");
+    printf(CYAN "🎮 INICIANDO PERGUNTA E RESPOSTA...\n\n" RESET);
+    sleep(2);
+
+    for (int p = 1; p <= 5; p++) {
+        system("clear");
+
+        if (p == 1) {
+            for (int q = 0; perg1[q] != '\0'; q++) { putchar(perg1[q]); for(int j=0;j<100000;j++); }
+            printf("\n A) Galaxian\n B) NASL Soccer\n C) Adventure\n D) Asteroids\n");
+        }
+        else if (p == 2) {
+            for (int q = 0; perg2[q] != '\0'; q++) { putchar(perg2[q]); for(int j=0;j<100000;j++); }
+            printf("\n A)Em 1935 na invasão da\n B) Em 1939 o estopim sendo a invsão d polônia\n C)1918 depois dos bandeirantes\n D)1915 depois da guerra do paraguai\n");
+        }
+        else if (p == 3) {
+            for (int q = 0; perg3[q] != '\0'; q++) { putchar(perg3[q]); for(int j=0;j<100000;j++); }
+            printf("\n A)Ferdinand Porshe\n B)Henry Ford\n C)Karl Benz \n D)henri Becquerel\n");
+        }
+        else if (p == 4) {
+            for (int q = 0; perg4[q] != '\0'; q++) { putchar(perg4[q]); for(int j=0;j<100000;j++); }
+            printf("\n A)Namor e Tocha-Humana\n B)Homen de ferro e Hulk\n C)Doutor Estranho e Capitão America\n D)Invncivel e Omni Man\n");
+        }
+        else if (p == 5) {
+            for (int q = 0; perg5[q] != '\0'; q++) { putchar(perg5[q]); for(int j=0;j<100000;j++); }
+            printf("\n A) US$ 2,5 bilhões\n B)US$ 2,4 bilhões\n C)US$ 2,2 bilhões\n D) 2,1 bilhões de Esmeraldas\n");
+        }
+
+        printf(CYAN "\nEscolha: " RESET);
+
+        while (1) {
+            scanf(" %c", &resposta);
+            if (resposta == 'A' || resposta == 'a' || resposta == 'B' || resposta == 'b' ||
+                resposta == 'C' || resposta == 'c' || resposta == 'D' || resposta == 'd') {
+                break;
+            }
+            printf(RED "❌ Precisa digitar apenas uma letra (A, B, C ou D)!\n" RESET);
+            printf(CYAN "Escolha novamente: " RESET);
+        }
+
+        int acertou = 0;
+        if (p == 1 && (resposta == 'C' || resposta == 'c')) acertou = 1;
+        if (p == 2 && (resposta == 'B' || resposta == 'b')) acertou = 1;
+        if (p == 3 && (resposta == 'C' || resposta == 'c')) acertou = 1;
+        if (p == 4 && (resposta == 'A' || resposta == 'a')) acertou = 1;
+        if (p == 5 && (resposta == 'A' || resposta == 'a')) acertou = 1;
+
+        system("clear");
+
+        if (acertou) {
+            printf(GREEN "\n\n          ✅  CORRETO!  ✅\n\n" RESET);
+            pontuacao++;
+        } else {
+            printf(RED "\n\n          ❌  ERRADO!  ❌\n\n" RESET);
+        }
+
+        printf("1 - Continuar para próxima pergunta\n");
+        printf("2 - Sair do Quiz agora\n");
+        printf("Escolha: ");
+        scanf("%d", &escolha);
+
+        if (escolha == 2) break;
+    }
+
+    system("clear");
+    printf(CYAN "\n\n🎉 FIM DO JOGO! 🎉\n" RESET);
+    printf("Sua pontuação: %d / 5\n\n", pontuacao);
+    if (pontuacao == 5) printf(GREEN "🏆 PERFEITO!\n" RESET);
+    else if (pontuacao >= 3) printf(GREEN "👍 Muito bom!\n" RESET);
+    else printf(YELLOW "😅 Tente novamente!\n" RESET);
+
+    printf("\n1 - Jogar novamente\n2 - Voltar ao Menu Principal\n");
+    scanf("%d", &escolha);
+    if (escolha == 2) return;
+}
+
+// ===================== JOGO: COBRA NA CAIXA (Verde) =====================
+void cobra_na_caixa() {
+    srand(time(NULL));
+    char nomes[7][30] = {"Michael jackson", "Tim maia", "Dante", "Vergil", "Jack sparrow", "Leon S. Kennedy", "Tony stark"};
+    int j1, j2, turno, caixa_botao, caixa_cobra, escolha, aberta[5] = {0}, opcao, usado[7] = {0};
+
+    while (1) {
+        system("clear");
+        printf(GREEN "╔════════════════════════════════════════════╗\n");
+        printf("║           🐍 COBRA NA CAIXA! 🐍            ║\n");
+        printf("╚════════════════════════════════════════════╝\n\n" RESET);
+
+        printf("Escolha o nome do Jogador 1:\n");
+        for (int i = 0; i < 7; i++) printf("%d - %s\n", i+1, nomes[i]);
+        do { printf("Digite o número: "); scanf("%d", &j1); j1--; } while (j1 < 0 || j1 > 6);
+        usado[j1] = 1;
+        system("clear");
+
+        printf("Jogador 1 escolheu: %s\n\n", nomes[j1]);
+
+        printf("Escolha o nome do Jogador 2 (não pode ser o mesmo):\n");
+        for (int i = 0; i < 7; i++) if (usado[i] == 0) printf("%d - %s\n", i+1, nomes[i]);
+        do { printf("Digite o número: "); scanf("%d", &j2); j2--; } while (j2 < 0 || j2 > 6 || usado[j2] == 1);
+
+        turno = rand() % 2;
+        printf("\n%s vai começar!\n", (turno == 0) ? nomes[j1] : nomes[j2]);
+        sleep(2);
+
+        do {
+            caixa_botao = rand() % 5;
+            caixa_cobra = rand() % 5;
+        } while (caixa_botao == caixa_cobra);
+
+        for (int i = 0; i < 5; i++) aberta[i] = 0;
+
+        while (1) {
+            system("clear");
+            printf(GREEN " ╔═════╗ ╔═════╗ ╔═════╗ ╔═════╗ ╔═════╗\n");
+            printf(" ║  1  ║ ║  2  ║ ║  3  ║ ║  4  ║ ║  5  ║\n");
+            printf(" ╚═════╝ ╚═════╝ ╚═════╝ ╚═════╝ ╚═════╝\n\n" RESET);
+            printf("Jogador atual: %s\n\n", (turno == 0) ? nomes[j1] : nomes[j2]);
+            printf("Escolha uma caixa (1 a 5): ");
+            scanf("%d", &escolha); escolha--;
+
+            if (escolha < 0 || escolha > 4 || aberta[escolha]) {
+                printf("\nCaixa inválida ou já aberta!\n"); sleep(1); continue;
+            }
+            aberta[escolha] = 1;
+
+            if (escolha == caixa_cobra) {
+                system("clear");
+                printf(RED "🐍🐍🐍 COBRA!!! 🐍🐍🐍\n\n" RESET);
+                printf("%s encontrou a cobra e PERDEU!\n\n", (turno == 0) ? nomes[j1] : nomes[j2]);
+                break;
+            }
+            if (escolha == caixa_botao) {
+                system("clear");
+                printf(GREEN "🔘🔘🔘 BOTÃO ENCONTRADO! 🔘🔘🔘\n\n" RESET);
+                printf("%s abriu a porta e VENCEU!\n\n", (turno == 0) ? nomes[j1] : nomes[j2]);
+                break;
+            }
+            printf("\n✅ Caixa vazia!\n");
+            sleep(1);
+            turno = 1 - turno;
+        }
+
+        printf("\n1 - Jogar novamente\n2 - Voltar ao Menu Principal\n");
+        scanf("%d", &opcao);
+        if (opcao == 2) break;
+    }
+}
+
+// ===================== JOGO: GOUSMAS WAR (Vermelho) =====================
+void gousmas_war() {
+    char nome_p1[2][50];
+    char nome_p2[2][50];
+    int furia_p1[2] = {1, 1};
+    int furia_p2[2] = {1, 1};
+    int turno = 0;
+    int op, gousma_atacante, gousma_alvo;
+
+    system("clear");
+    printf(RED "╔════════════════════════════════════════════╗\n");
+    printf("║              ⚔️ GOUSMAS WAR ⚔️               ║\n");
+    printf("╚════════════════════════════════════════════╝\n\n" RESET);
+
+    printf("Jogador 1 - Dê nome para suas Gousmas:\n");
+    printf("Nome da Gousma 1: "); scanf(" %49[^\n]", nome_p1[0]);
+    printf("Nome da Gousma 2: "); scanf(" %49[^\n]", nome_p1[1]);
+
+    printf("\nJogador 2 - Dê nome para suas Gousmas:\n");
+    printf("Nome da Gousma 1: "); scanf(" %49[^\n]", nome_p2[0]);
+    printf("Nome da Gousma 2: "); scanf(" %49[^\n]", nome_p2[1]);
+
+    sleep(1);
+
+    while (1) {
+        system("clear");
+        printf(RED "╔════════════════════════════════════════════╗\n");
+        printf("║              ⚔️ GOUSMAS WAR ⚔️               ║\n");
+        printf("╚════════════════════════════════════════════╝\n\n" RESET);
+
+        printf("Jogador 1: %s[%d] %s[%d]\n", nome_p1[0], furia_p1[0], nome_p1[1], furia_p1[1]);
+        printf("Jogador 2: %s[%d] %s[%d]\n\n", nome_p2[0], furia_p2[0], nome_p2[1], furia_p2[1]);
+
+        printf("Turno do Jogador %d\n\n", turno + 1);
+        printf("1 - Atacar\n");
+        printf("2 - Dividir Gousma (se fúria > 1)\n");
+        printf("3 - Desistir\n");
+        printf("Escolha: ");
+        scanf("%d", &op);
+
+        if (op == 3) break;
+
+        if (op == 1) {
+            printf("Qual Gousma sua vai atacar? (1 ou 2): ");
+            scanf("%d", &gousma_atacante); gousma_atacante--;
+            printf("Qual Gousma do inimigo? (1 ou 2): ");
+            scanf("%d", &gousma_alvo); gousma_alvo--;
+
+            if (turno == 0) {
+                furia_p2[gousma_alvo] += furia_p1[gousma_atacante];
+                if (furia_p2[gousma_alvo] > 5) furia_p2[gousma_alvo] = 0;
+            } else {
+                furia_p1[gousma_alvo] += furia_p2[gousma_atacante];
+                if (furia_p1[gousma_alvo] > 5) furia_p1[gousma_alvo] = 0;
+            }
+        }
+        else if (op == 2) {
+            printf("Qual Gousma quer dividir? (1 ou 2): ");
+            scanf("%d", &gousma_atacante); gousma_atacante--;
+
+            if (turno == 0) {
+                if (furia_p1[gousma_atacante] > 1) {
+                    int metade = furia_p1[gousma_atacante] / 2;
+                    furia_p1[gousma_atacante] -= metade;
+                    furia_p1[1 - gousma_atacante] += metade;
+                    printf(GREEN "Gousma dividida!\n" RESET);
+                } else {
+                    printf(YELLOW "Essa Gousma não tem fúria suficiente para dividir!\n" RESET);
+                }
+            } else {
+                if (furia_p2[gousma_atacante] > 1) {
+                    int metade = furia_p2[gousma_atacante] / 2;
+                    furia_p2[gousma_atacante] -= metade;
+                    furia_p2[1 - gousma_atacante] += metade;
+                    printf(GREEN "Gousma dividida!\n" RESET);
+                } else {
+                    printf(YELLOW "Essa Gousma não tem fúria suficiente para dividir!\n" RESET);
+                }
+            }
+            sleep(2);
+        }
+
+        if (furia_p1[0] == 0 && furia_p1[1] == 0) {
+            printf("\nJogador 2 venceu!\n");
+            break;
+        }
+        if (furia_p2[0] == 0 && furia_p2[1] == 0) {
+            printf("\nJogador 1 venceu!\n");
+            break;
+        }
+
+        turno = 1 - turno;
+    }
+
+    printf("\n1 - Jogar novamente\n2 - Voltar ao Menu Principal\n");
+    scanf("%d", &op);
+    if (op == 2) return;
+}
+
+// ===================== MENUS SECUNDÁRIOS =====================
+void menu_quiz() {
+    carregando("Carregando Pergunta e Resposta...");
+    int op;
+    while (1) {
+        system("clear");
+        printf(CYAN "╔════════════════════════════════════════════╗\n");
+        printf("║           PERGUNTA E RESPOSTA              ║\n");
+        printf("╠════════════════════════════════════════════╣\n");
+        printf("║   1 - Jogar                                ║\n");
+        printf("║   2 - Ver Regras                           ║\n");
+        printf("║   3 - Voltar ao Menu Principal             ║\n");
+        printf("╚════════════════════════════════════════════╝\n\n" RESET);
+        printf("Escolha: ");
+        scanf("%d", &op);
+        if (op == 1) jogar_quiz();
+        else if (op == 2) {
+            system("clear");
+            printf("Regras do Quiz:\n• 5 perguntas\n• 4 alternativas\n• Digite A, B, C ou D\n");
+            printf("Pressione qualquer tecla..."); getchar(); getchar();
+        }
+        else if (op == 3) return;
+    }
+}
+
+void menu_cobra_na_caixa() {
+    carregando("Carregando Cobra na Caixa...");
+    int op;
+    while (1) {
+        system("clear");
+        printf(GREEN "╔════════════════════════════════════════════╗\n");
+        printf("║          🐍 COBRA NA CAIXA! 🐍             ║\n");
+        printf("╠════════════════════════════════════════════╣\n");
+        printf("║   1 - Jogar                                ║\n");
+        printf("║   2 - Ver Regras                           ║\n");
+        printf("║   3 - Voltar ao Menu Principal             ║\n");
+        printf("╚════════════════════════════════════════════╝\n\n" RESET);
+        printf("Escolha: ");
+        scanf("%d", &op);
+        if (op == 1) cobra_na_caixa();
+        else if (op == 2) {
+            system("clear");
+            printf("Regras da Cobra na Caixa:\n• Dois jogadores\n• 5 caixas\n• Uma cobra e um botão\n• Quem achar a cobra perde\n");
+            printf("Pressione qualquer tecla..."); getchar(); getchar();
+        }
+        else if (op == 3) return;
+    }
+}
+
+void menu_gousmas_war() {
+    carregando("Carregando Gousmas War...");
+    int op;
+    while (1) {
+        system("clear");
+        printf(RED "╔════════════════════════════════════════════╗\n");
+        printf("║              ⚔️ GOUSMAS WAR ⚔️               ║\n");
+        printf("╠════════════════════════════════════════════╣\n");
+        printf("║   1 - Jogar                                ║\n");
+        printf("║   2 - Ver Regras                           ║\n");
+        printf("║   3 - Voltar ao Menu Principal             ║\n");
+        printf("╚════════════════════════════════════════════╝\n\n" RESET);
+        printf("Escolha: ");
+        scanf("%d", &op);
+        if (op == 1) gousmas_war();
+        else if (op == 2) {
+            system("clear");
+            printf("Regras do Gousmas War:\n• Cada jogador tem 2 Gousmas\n• Ataque transfere toda fúria\n• Fúria > 5 = desintegra\n• Dividir só se fúria > 1\n");
+            printf("Pressione qualquer tecla..."); getchar(); getchar();
+        }
+        else if (op == 3) return;
+    }
+}
+
+// ===================== MENU PRINCIPAL (Roxo) =====================
+int main() {
+    setlocale(LC_ALL, "Portuguese");
+    int opcao;
+
+    while (1) {
+        system("clear");
+        printf(MAGENTA "╔════════════════════════════════════════════════════════════╗\n");
+        printf("║                        🎮 ARCADE 🎮                        ║\n");
+        printf("║                      SKY-LUNNA-GAMES                       ║\n");
+        printf("╠════════════════════════════════════════════════════════════╣\n");
+        printf("║                                                            ║\n");
+        printf("║   1 - Pergunta e Resposta                                  ║\n");
+        printf("║   2 - Cobra na Caixa!                                      ║\n");
+        printf("║   3 - Gousmas War                                          ║\n");
+        printf("║                                                            ║\n");
+        printf("║   4 - Sair do Arcade                                       ║\n");
+        printf("║                                                            ║\n");
+        printf("╚════════════════════════════════════════════════════════════╝\n\n" RESET);
+        printf(" Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        if (opcao == 1) menu_quiz();
+        else if (opcao == 2) menu_cobra_na_caixa();
+        else if (opcao == 3) menu_gousmas_war();
+        else if (opcao == 4) {
+            system("clear");
+            printf("👋 Obrigado por jogar o Arcade!\n");
+            printf("Até a próxima!\n\n");
+            sleep(2);
+            break;
+        }
+        else {
+            system("clear");
+            printf("Opção inválida! Tente novamente.\n");
+            sleep(2);
+        }
+    }
+    return 0;
+}
